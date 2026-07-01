@@ -185,7 +185,7 @@ export class EditorPanel {
         data: {
           locale,
           keypath,
-          records: CurrentFile.loader.getShadowLocales(node),
+          records: CurrentFile.loader.getDisplayLocales(node),
           reviews: Global.reviews.getReviews(keypath),
           keyIndex: index,
         },

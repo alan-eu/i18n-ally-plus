@@ -322,6 +322,27 @@ export abstract class Loader extends Disposable {
     return locales
   }
 
+  /**
+   * Like `getShadowLocales`, but intended for display panels (sidebar, editor, hover).
+   * When `i18n-ally.hideMissingLocales` is enabled, locales that have no value for
+   * this key (i.e. shadow/missing entries) are omitted, so a key only shows the
+   * locales it actually has. This keeps functional callers (translation, commands)
+   * on `getShadowLocales`, which always includes the missing locales.
+   */
+  getDisplayLocales(node: LocaleNode, listedLocales?: string[]) {
+    const locales = this.getShadowLocales(node, listedLocales)
+
+    if (!Config.hideMissingLocales)
+      return locales
+
+    const visible: Record<string, LocaleRecord> = {}
+    for (const [locale, record] of Object.entries(locales)) {
+      if (!record.shadow)
+        visible[locale] = record
+    }
+    return visible
+  }
+
   abstract write (pendings: PendingWrite | PendingWrite[]): Promise<void>
 
   canHandleWrites(pending: PendingWrite) {

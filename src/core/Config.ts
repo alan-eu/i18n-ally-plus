@@ -34,6 +34,7 @@ export class Config {
     'sourceLanguage',
     'ignoredLocales',
     'displayLanguage',
+    'hideMissingLocales',
     'regex.key',
     'regex.usageMatch',
     'regex.usageMatchAppend',
@@ -101,6 +102,10 @@ export class Config {
 
   static set ignoredLocales(value) {
     this.setConfig('ignoredLocales', value, true)
+  }
+
+  static get hideMissingLocales(): boolean {
+    return this.getConfig<boolean>('hideMissingLocales') ?? false
   }
 
   static get _keyStyle(): KeyStyle {

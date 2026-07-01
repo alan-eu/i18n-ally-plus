@@ -102,6 +102,9 @@ export default Vue.extend({
       return (this.config.locales || [])
         .filter(i => !(this.config.ignoredLocales || []).includes(i))
         .map(l => this.data.records[l])
+        // when `hideMissingLocales` is on, the extension omits missing locales
+        // from `records`, so drop the resulting empty lookups
+        .filter(Boolean)
     },
     emptyRecords() {
       return this.records.filter(i =>

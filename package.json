@@ -750,6 +750,11 @@
           "type": "array",
           "description": "%config.ignored_locales%"
         },
+        "i18n-ally.hideMissingLocales": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.hide_missing_locales%"
+        },
         "i18n-ally.keystyle": {
           "type": "string",
           "enum": [

@@ -71,6 +71,10 @@ export function createTable(visibleLocales: string[], records: Record<string, Lo
       if (!record)
         return []
 
+      // hide locales the key doesn't have when `hideMissingLocales` is enabled
+      if (Config.hideMissingLocales && record.shadow)
+        return []
+
       const row = {
         locale: decorateLocale(locale),
         value: formatValue(CurrentFile.loader.getValueByKey(record.keypath, locale, maxLength) || '-'),

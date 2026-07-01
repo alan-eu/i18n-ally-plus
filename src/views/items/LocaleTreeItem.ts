@@ -114,7 +114,7 @@ export class LocaleTreeItem extends BaseTreeItem {
     if (this.node.type === 'tree')
       nodes = Object.values(this.node.children)
     else if (this.node.type === 'node')
-      nodes = Object.values(CurrentFile.loader.getShadowLocales(this.node, this.listedLocales))
+      nodes = Object.values(CurrentFile.loader.getDisplayLocales(this.node, this.listedLocales))
     const items = nodes
       .filter(filter)
       .map(node => new LocaleTreeItem(this.ctx, node, false))

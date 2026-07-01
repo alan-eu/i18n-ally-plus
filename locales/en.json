@@ -56,6 +56,7 @@
   "config.full_reload_on_changed": "Perform a full reload on locale file changes. (for .js/.ts dynamic import)",
   "config.google_api_key": "API key for Google Translate (Optional)",
   "config.ignore_files": "Locale files to ignore on loading. Accepting an array of glob.",
+  "config.hide_missing_locales": "Hide locales that have no value for a key (missing) from the sidebar, editor and hover panels, so each key only shows the locales it actually has. Useful in monorepos where every key uses a different subset of locales.",
   "config.ignored_locales": "Locale codes to ignore",
   "config.include_subfolders": "Search recursively inside locale directories",
   "config.indent": "Indent space size for locale files",
