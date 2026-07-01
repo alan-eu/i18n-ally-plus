@@ -32,8 +32,8 @@ export class LocaleLoader extends Loader {
       this._dir_structure = await this.guessDirStructure()
       Log.info(`📂 Directory structure: ${this._dir_structure}`)
 
-      if (Config._pathMatcher)
-        Log.info(`🗃 Custom Path Matcher: ${Config._pathMatcher}`)
+      if (Config._pathMatchers)
+        Log.info(`🗃 Custom Path Matcher: ${Config._pathMatchers.join(', ')}`)
 
       this._path_matchers = Global.getPathMatchers(this._dir_structure)
       Log.info(`🗃 Path Matcher Regex: ${this._path_matchers.map(i => i.regex)}`)

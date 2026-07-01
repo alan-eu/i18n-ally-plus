@@ -200,8 +200,14 @@ export class Config {
     return this.getConfig<string>('preferredDelimiter') || '-'
   }
 
-  static get _pathMatcher(): string | undefined {
-    return this.getConfig('pathMatcher')
+  static get _pathMatchers(): string[] | undefined {
+    const config = this.getConfig<string | string[]>('pathMatcher')
+    if (!config)
+      return
+    const matchers = (Array.isArray(config) ? config : [config])
+      .map(i => i?.trim())
+      .filter(Boolean) as string[]
+    return matchers.length ? matchers : undefined
   }
 
   static get regexKey(): string {

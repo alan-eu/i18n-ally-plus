@@ -928,7 +928,13 @@
           "description": "%config.namespace%"
         },
         "i18n-ally.pathMatcher": {
-          "type": "string",
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          },
           "description": "%config.path_matcher%"
         },
         "i18n-ally.languageTagSystem": {

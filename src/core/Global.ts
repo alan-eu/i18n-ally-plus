@@ -220,8 +220,8 @@ export class Global {
   }
 
   static getPathMatchers(dirStructure: DirStructure) {
-    const rules = Config._pathMatcher
-      ? [Config._pathMatcher]
+    const rules = Config._pathMatchers
+      ? Config._pathMatchers
       : this.enabledFrameworks
         .flatMap(f => f.pathMatcher(dirStructure))
 
