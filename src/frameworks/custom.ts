@@ -12,6 +12,7 @@ interface CustomFrameworkConfig {
   languageIds?: LanguageId[] | LanguageId
   usageMatchRegex?: string[] | string
   scopeRangeRegex?: string
+  inlineNamespaceRegex?: string[] | string
   refactorTemplates?: string[]
   monopoly?: boolean
 
@@ -83,35 +84,66 @@ class CustomFramework extends Framework {
   }
 
   getScopeRange(document: TextDocument): ScopeRange[] | undefined {
-    if (!this.data?.scopeRangeRegex)
+    if (!this.data?.scopeRangeRegex && !this.data?.inlineNamespaceRegex)
       return undefined
 
     if (!this.languageIds.includes(document.languageId as any))
       return
 
-    const ranges: ScopeRange[] = []
     const text = document.getText()
-    const reg = new RegExp(this.data.scopeRangeRegex, 'g')
 
-    for (const match of text.matchAll(reg)) {
-      if (match?.index == null)
-        continue
+    // Inline scopes: a namespace passed as a per-call option, e.g.
+    // `tString('key', { ns: 'foo' })`. Each match only scopes the key(s) inside
+    // that single call, so calls without a namespace option are unaffected. The
+    // namespace must be captured in group 1, and the match must span the key
+    // (place the key before the `ns` option in the call). Listed first so a
+    // per-call namespace wins over a surrounding block scope (see `find` in
+    // handleRegexMatch).
+    const inlineRanges: ScopeRange[] = []
+    let inlineRegexes = this.data?.inlineNamespaceRegex ?? []
+    if (typeof inlineRegexes === 'string')
+      inlineRegexes = [inlineRegexes]
 
-      // end previous scope
-      if (ranges.length)
-        ranges[ranges.length - 1].end = match.index
+    for (const raw of inlineRegexes) {
+      const reg = new RegExp(raw, 'g')
+      for (const match of text.matchAll(reg)) {
+        if (match?.index == null || !match[1])
+          continue
 
-      // start new scope if namespace provides
-      if (match[1]) {
-        ranges.push({
+        inlineRanges.push({
           start: match.index,
-          end: text.length,
+          end: match.index + match[0].length,
           namespace: match[1] as string,
         })
       }
     }
 
-    return ranges
+    // Block scopes: a match opens a namespace scope that extends until the next
+    // match (or end of file). Suitable for statements like `useTranslation('ns')`.
+    const blockRanges: ScopeRange[] = []
+    if (this.data?.scopeRangeRegex) {
+      const reg = new RegExp(this.data.scopeRangeRegex, 'g')
+
+      for (const match of text.matchAll(reg)) {
+        if (match?.index == null)
+          continue
+
+        // end previous scope
+        if (blockRanges.length)
+          blockRanges[blockRanges.length - 1].end = match.index
+
+        // start new scope if namespace provides
+        if (match[1]) {
+          blockRanges.push({
+            start: match.index,
+            end: text.length,
+            namespace: match[1] as string,
+          })
+        }
+      }
+    }
+
+    return [...inlineRanges, ...blockRanges]
   }
 
   startWatch(root?: string) {
