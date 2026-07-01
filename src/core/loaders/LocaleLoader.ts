@@ -585,10 +585,18 @@ export class LocaleLoader extends Loader {
     const root = new LocaleTree({ keypath: '' })
 
     if (Global.namespaceEnabled) {
-      const namespaces = uniq(this.files.map(f => f.namespace)) as string[]
-      for (const ns of namespaces) {
-        const files = this.files.filter(f => f.namespace === ns)
+      // group by namespace in one pass instead of re-filtering all files per namespace
+      // (O(files) vs O(namespaces × files) — matters as scoping multiplies namespaces)
+      const byNamespace = new Map<string | undefined, ParsedFile[]>()
+      for (const file of this.files) {
+        const group = byNamespace.get(file.namespace)
+        if (group)
+          group.push(file)
+        else
+          byNamespace.set(file.namespace, [file])
+      }
 
+      for (const [ns, files] of byNamespace) {
         for (const file of files) {
           const value = ns ? set({}, ns, file.value) : file.value
           this.updateTree(root, value, '', '', { ...file, meta: { namespace: file.namespace } })
@@ -622,6 +630,9 @@ export class LocaleLoader extends Loader {
         const _locale_dirs = await fg(localesPaths, {
           cwd: this.rootpath,
           onlyDirectories: true,
+          // a `**` localesPath (e.g. `frontend/**/translations`) otherwise descends
+          // into node_modules and loads dependency locale dirs as catalogs
+          ignore: ['**/node_modules/**', '**/vendors/**', ...Config.ignoreFiles],
         })
 
         if (localesPaths.includes('.'))
