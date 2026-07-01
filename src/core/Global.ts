@@ -240,7 +240,7 @@ export class Global {
   }
 
   static get namespaceEnabled() {
-    return Config.namespace || this.hasFeatureEnabled('namespace')
+    return Config.namespace || !!Config.namespaceFromPath || this.hasFeatureEnabled('namespace')
   }
 
   static get localesPaths(): string[] | undefined {

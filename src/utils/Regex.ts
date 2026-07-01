@@ -45,6 +45,7 @@ export function handleRegexMatch(
       ...rewriteContext,
       namespace,
     })
+    key = applyPathScope(key, rewriteContext?.targetFile)
     return {
       key,
       start,
@@ -52,6 +53,19 @@ export function handleRegexMatch(
       quoted,
     }
   }
+}
+
+/**
+ * Prefix a resolved key with the path-derived scope of the file it was found in
+ * (see Config.getPathScope), unless the key already starts with that scope. This
+ * keeps code usages aligned with the scoped namespaces the loader assigns to catalog
+ * files, so short namespaces reused across apps/packages resolve to the right file.
+ */
+export function applyPathScope(key: string, filepath?: string): string {
+  const scope = Config.getPathScope(filepath)
+  if (scope && key.split('.')[0] !== scope)
+    return `${scope}.${key}`
+  return key
 }
 
 export function regexFindKeys(

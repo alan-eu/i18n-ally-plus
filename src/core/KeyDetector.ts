@@ -4,7 +4,7 @@ import { RewriteKeyContext } from './types'
 import { Config } from './Config'
 import { Loader } from './loaders/Loader'
 import { ScopeRange } from '~/frameworks'
-import { regexFindKeys } from '~/utils'
+import { regexFindKeys, applyPathScope } from '~/utils'
 import { KeyInDocument, CurrentFile } from '~/core'
 
 export interface KeyUsages {
@@ -37,7 +37,15 @@ export class KeyDetector {
     for (const regex of regs) {
       const range = document.getWordRangeAtPosition(position, regex)
       if (range) {
-        const key = document.getText(range).replace(regex, '$1')
+        let key = document.getText(range).replace(regex, '$1')
+
+        // when path-scoped namespaces are enabled, resolve the raw match the same way
+        // the usage scanner does (namespace delimiter -> dot, then scope prefix) so
+        // hover / definition / completion align with the scoped locale tree
+        if (Config.getPathScope(document.uri.fsPath)) {
+          key = CurrentFile.loader.rewriteKeys(key, 'reference', { targetFile: document.uri.fsPath })
+          key = applyPathScope(key, document.uri.fsPath)
+        }
 
         if (dotEnding) {
           if (!key || key.endsWith('.'))

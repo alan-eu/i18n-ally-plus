@@ -931,6 +931,10 @@
           "type": "boolean",
           "description": "%config.namespace%"
         },
+        "i18n-ally.namespaceFromPath": {
+          "type": "string",
+          "description": "%config.namespace_from_path%"
+        },
         "i18n-ally.pathMatcher": {
           "type": [
             "string",

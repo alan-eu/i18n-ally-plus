@@ -420,6 +420,12 @@ export class LocaleLoader extends Loader {
     if (namespace)
       namespace = namespace.replace(/\//g, '.')
 
+    // prefix a path-derived scope so short namespaces reused across apps/packages
+    // (e.g. `app` in many apps) stay distinct — see Config.getPathScope
+    const scope = Config.getPathScope(fullpath)
+    if (scope)
+      namespace = namespace ? `${scope}.${namespace}` : scope
+
     let locale = match.groups?.locale
     if (locale)
       locale = Config.normalizeLocale(locale, '')

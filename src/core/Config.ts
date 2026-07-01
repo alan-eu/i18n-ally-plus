@@ -6,7 +6,7 @@ import { TagSystems } from '../tagSystems'
 import { EXT_NAMESPACE, EXT_ID, EXT_LEGACY_NAMESPACE, KEY_REG_DEFAULT, KEY_REG_ALL, DEFAULT_LOCALE_COUNTRY_MAP } from '../meta'
 import { KeyStyle, DirStructureAuto, SortCompare, TargetPickingStrategy } from '.'
 import i18n from '~/i18n'
-import { CaseStyles } from '~/utils/changeCase'
+import { CaseStyles, changeCase } from '~/utils/changeCase'
 import { ExtractionBabelOptions, ExtractionHTMLOptions } from '~/extraction/parsers/options'
 import { resolveRefactorTemplate } from '~/utils/resolveRefactorTemplate'
 
@@ -21,6 +21,7 @@ export class Config {
     'dirStructure',
     'encoding',
     'namespace',
+    'namespaceFromPath',
     'defaultNamespace',
     'disablePathParsing',
     'readonly',
@@ -106,6 +107,49 @@ export class Config {
 
   static get hideMissingLocales(): boolean {
     return this.getConfig<boolean>('hideMissingLocales') ?? false
+  }
+
+  static get namespaceFromPath(): string | undefined {
+    const value = this.getConfig<string>('namespaceFromPath')
+    return value && value.trim() ? value.trim() : undefined
+  }
+
+  private static _pathScopeRegex?: { src: string; reg: RegExp | undefined }
+
+  /**
+   * Derive a namespace "scope" for a file from its path, using the regex in
+   * `i18n-ally.namespaceFromPath` (capture group 1 = the scope, camelCased). Used to
+   * disambiguate short namespaces that are reused across apps/packages in a monorepo
+   * (e.g. an `app` namespace present in many apps) by prefixing them per package/app.
+   * Returns undefined when the feature is off or the path doesn't match.
+   */
+  static getPathScope(filepath: string | undefined): string | undefined {
+    const src = this.namespaceFromPath
+    if (!src || !filepath)
+      return
+
+    if (this._pathScopeRegex?.src !== src) {
+      let reg: RegExp | undefined
+      try {
+        reg = new RegExp(src)
+      }
+      catch {
+        reg = undefined
+      }
+      this._pathScopeRegex = { src, reg }
+    }
+    const reg = this._pathScopeRegex.reg
+    if (!reg)
+      return
+
+    let rel = filepath.replace(/\\/g, '/')
+    const root = this.root?.replace(/\\/g, '/')
+    if (root && rel.startsWith(root))
+      rel = rel.slice(root.length).replace(/^\//, '')
+
+    const match = reg.exec(rel)
+    if (match && match[1])
+      return changeCase(match[1], 'camelCase')
   }
 
   static get _keyStyle(): KeyStyle {
