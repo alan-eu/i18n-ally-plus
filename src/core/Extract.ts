@@ -1,7 +1,7 @@
 import { basename, extname } from 'path'
 import { TextDocument, window } from 'vscode'
 import { nanoid } from 'nanoid'
-import limax from 'limax'
+import getSlug from 'speakingurl'
 import { Config, Global } from '../extension'
 import { ExtractInfo } from './types'
 import { CurrentFile } from './CurrentFile'
@@ -31,7 +31,7 @@ export function generateKeyFromText(text: string, filepath?: string, reuseExisti
   }
   else {
     text = text.replace(/\$/g, '')
-    key = limax(text, { separator: Config.preferredDelimiter, tone: false })
+    key = getSlug(text, { separator: Config.preferredDelimiter })
       .slice(0, Config.extractKeyMaxLength ?? Infinity)
   }
 

@@ -23,7 +23,6 @@ const config = {
   devtool: 'source-map',
   externals: {
     'vscode': 'commonjs vscode',
-    'nodejieba': 'nodejieba',
     'ts-node': 'ts-node',
     'less': '_',
     'sass': '_',
