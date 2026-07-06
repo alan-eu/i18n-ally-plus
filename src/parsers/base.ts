@@ -2,6 +2,7 @@
 import { TextDocument } from 'vscode'
 import { KeyStyle, ParserOptions, KeyInDocument, Config } from '~/core'
 import { File } from '~/utils'
+import { findKeyInAST } from './navigate'
 
 export abstract class Parser {
   abstract readonly id: string
@@ -50,7 +51,7 @@ export abstract class Parser {
   }
 
   navigateToKey(text: string, keypath: string, keystyle: KeyStyle) {
-    return this.parseAST(text).find(k => k.key === keypath)
+    return findKeyInAST(this.parseAST(text), keypath)
   }
 
   annotationSupported = false
