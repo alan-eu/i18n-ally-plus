@@ -3,7 +3,6 @@ import { Log } from '~/utils'
 import { LocaleTreeItem, UsageReportRootItem } from '~/views'
 import i18n from '~/i18n'
 import { LocaleRecord, CurrentFile, Analyst } from '~/core'
-import { Telemetry, TelemetryKey } from '~/core/Telemetry'
 
 export async function DeleteRecords(records: LocaleRecord[]) {
   try {
@@ -26,8 +25,6 @@ export async function DeleteRecords(records: LocaleRecord[]) {
 }
 
 export async function DeleteKey(item: LocaleTreeItem | UsageReportRootItem) {
-  Telemetry.track(TelemetryKey.DeleteKey)
-
   const Yes = i18n.t('prompt.button_yes')
   let records: LocaleRecord[] = []
 

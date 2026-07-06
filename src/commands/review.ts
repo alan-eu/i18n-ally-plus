@@ -3,14 +3,12 @@ import { Commands } from './commands'
 import { ExtensionModule } from '~/modules'
 import { ReviewTranslationCandidates } from '~/views/items/ReviewTranslationCandidates'
 import i18n from '~/i18n'
-import { Global, TranslationCandidateWithMeta, ReviewCommentWithMeta, Telemetry, TelemetryKey } from '~/core'
+import { Global, TranslationCandidateWithMeta, ReviewCommentWithMeta } from '~/core'
 
 export default <ExtensionModule> function() {
   return [
     commands.registerCommand(Commands.review_apply_translation,
       async(candidate: TranslationCandidateWithMeta | ReviewTranslationCandidates) => {
-        Telemetry.track(TelemetryKey.ReviewApplyTranslation)
-
         if (candidate instanceof ReviewTranslationCandidates) {
           const candidates = candidate.candidates
 
@@ -58,8 +56,6 @@ export default <ExtensionModule> function() {
 
     commands.registerCommand(Commands.review_apply_suggestion,
       async(comment: ReviewCommentWithMeta) => {
-        Telemetry.track(TelemetryKey.ReviewApplySuggestion)
-
         const Apply = i18n.t('prompt.button_apply')
 
         const result = await window.showInformationMessage(

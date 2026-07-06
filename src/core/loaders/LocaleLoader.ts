@@ -9,7 +9,6 @@ import { ParsedFile, PendingWrite, DirStructure, TargetPickingStrategy } from '.
 import { LocaleTree } from '../Nodes'
 import { AllyError, ErrorType } from '../Errors'
 import { Analyst, Global, Config } from '..'
-import { Telemetry, TelemetryKey } from '../Telemetry'
 import { Loader } from './Loader'
 import { ReplaceLocale, Log, applyPendingToObject, unflatten, NodeHelper, getCache, setCache, getLocaleCompare } from '~/utils'
 import i18n from '~/i18n'
@@ -671,9 +670,6 @@ export class LocaleLoader extends Loader {
           this.watchOn(pathname)
         if (!this.files.length)
           window.showWarningMessage(i18n.t('prompt.no_locale_loaded'))
-
-        if (this.files.length && this.keys.length)
-          Telemetry.track(TelemetryKey.Activated)
       }
       catch (e) {
         Log.error(e)

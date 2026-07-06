@@ -1,11 +1,9 @@
 import { CommandOptions, getNodeOrRecord, getRecordFromNode } from './common'
 import { LocaleTreeItem } from '~/views'
 import { Log, promptEdit } from '~/utils'
-import { Config, CurrentFile, Telemetry, TelemetryKey } from '~/core'
+import { Config, CurrentFile } from '~/core'
 
 export async function EditKey(item?: LocaleTreeItem | CommandOptions) {
-  Telemetry.track(TelemetryKey.EditKey, { source: Telemetry.getActionSource(item) })
-
   let node = getNodeOrRecord(item)
 
   if (!node)
