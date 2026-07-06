@@ -1,5 +1,5 @@
 import { commands, TextDocument, Uri, window, workspace } from 'vscode'
-import { notNullish } from '@antfu/utils'
+import { notNullish } from '~/utils'
 import fs from 'fs-extra'
 import { DetectHardStrings } from './detectHardStrings'
 import { ExtensionModule } from '~/modules'

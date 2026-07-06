@@ -1,7 +1,7 @@
 import { extname, resolve } from 'path'
 import { workspace, commands, window, EventEmitter, Event, ExtensionContext, ConfigurationChangeEvent, TextDocument, WorkspaceFolder } from 'vscode'
 import { uniq } from 'lodash'
-import { slash } from '@antfu/utils'
+import { slash } from '~/utils'
 import { isMatch } from 'micromatch'
 import { ParsePathMatcher } from '../utils/PathMatcher'
 import { EXT_NAMESPACE } from '../meta'

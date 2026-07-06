@@ -1,6 +1,6 @@
 import { Disposable } from 'vscode'
 import _ from 'lodash'
-import { uniq } from '@antfu/utils'
+import { uniq } from 'lodash'
 import { PendingWrite } from '../types'
 import { Translator } from '../Translator'
 import { Config } from '../Config'

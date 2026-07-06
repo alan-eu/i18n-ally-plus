@@ -17,6 +17,14 @@ export function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
+export function notNullish<T>(value: T | null | undefined): value is NonNullable<T> {
+  return value != null
+}
+
+export function slash(str: string) {
+  return str.replace(/\\/g, '/')
+}
+
 export function escapeMarkdown(text: string) {
   return text
     .replace(/\|/g, '\\|')
