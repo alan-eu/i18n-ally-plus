@@ -29,6 +29,7 @@ import NextTranslateFramework from './next-translate'
 import PhpGettextFramework from './php-gettext'
 import GeneralFramework from './general'
 import LinguiFramework from './lingui'
+import I18nJsFramework from './i18n-js'
 import JekyllFramework from './jekyll'
 import FluentVueSFCFramework from './fluent-vue-sfc'
 import i18n from '~/i18n'
@@ -61,6 +62,7 @@ export const frameworks: Framework[] = [
   new RubyRailsFramework(),
   new TranslocoFramework(),
   new SvelteFramework(),
+  new I18nJsFramework(),
   new PolyglotFramework(),
   new GlobalizeFramework(),
   new UI5Framework(),
