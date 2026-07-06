@@ -3,7 +3,7 @@ import path from 'path'
 import { Parser } from './base'
 import i18n from '~/i18n'
 import { Log } from '~/utils'
-import { Config, Global } from '~/core'
+import { Config } from '~/core'
 
 const LanguageIds = {
   js: 'javascript',
@@ -31,21 +31,13 @@ export class EcmascriptParser extends Parser {
   }
 
   async load(filepath: string) {
-    const loader = path.resolve(Config.extensionPath!, 'assets/loader.js')
-    const tsNode = Config.parsersTypescriptTsNodePath
-    const dir = Global.rootpath
-    const compilerOptions = {
-      importHelpers: false,
-      allowJs: true,
-      module: 'commonjs',
-      ...Config.parsersTypescriptCompilerOption,
-    }
-    const options = JSON.stringify(compilerOptions).replace(/"/g, '\\"')
+    // dist/loader.js is a self-contained sucrase-based transpiling loader
+    // (bundled by tsup); run it in a subprocess to evaluate the locale module
+    // in isolation and read back its value as JSON
+    const loader = path.resolve(Config.extensionPath!, 'dist/loader.js')
 
     return new Promise<any>((resolve, reject) => {
-      const cmd = `${tsNode} --dir "${dir}" --transpile-only --compiler-options "${options}" "${loader}" "${filepath}"`
-      // eslint-disable-next-line no-console
-      console.log(`[i18n-ally] spawn: ${cmd}`)
+      const cmd = `node "${loader}" "${filepath}"`
       child_process.exec(cmd, (err, stdout) => {
         if (err)
           return reject(err)

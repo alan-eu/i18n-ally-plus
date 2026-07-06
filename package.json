@@ -66,8 +66,7 @@
     "semver": "^7.5.2",
     "speakingurl": "^14.0.1",
     "string-similarity": "^4.0.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3",
+    "sucrase": "^3.35.0",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
@@ -111,6 +110,7 @@
     "rimraf": "^3.0.2",
     "stylus": "^0.54.8",
     "tsup": "^8.3.5",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.19.1",
     "vite": "^6.4.3",
     "vite-plugin-singlefile": "^2.0.3",
@@ -1147,14 +1147,6 @@
         "i18n-ally.frameworks.ruby-rails.scopeRoot": {
           "type": "string",
           "default": "app/views"
-        },
-        "i18n-ally.parsers.typescript.tsNodePath": {
-          "type": "string",
-          "default": "node_modules/ts-node/dist/bin.js"
-        },
-        "i18n-ally.parsers.typescript.compilerOptions": {
-          "type": "object",
-          "default": {}
         },
         "i18n-ally.parsers.extendFileExtensions": {
           "type": "object",

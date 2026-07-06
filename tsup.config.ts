@@ -29,7 +29,12 @@ const externalOptionalPeers = {
 }
 
 export default defineConfig({
-  entry: { extension: 'src/extension.ts' },
+  entry: {
+    extension: 'src/extension.ts',
+    // standalone subprocess that evaluates JS/TS locale files (jiti-bundled,
+    // self-contained — no ts-node/typescript shipped from node_modules)
+    loader: 'src/loader.ts',
+  },
   outDir: 'dist',
   format: ['cjs'],
   platform: 'node',

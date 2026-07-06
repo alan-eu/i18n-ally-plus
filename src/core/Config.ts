@@ -1,4 +1,3 @@
-import path from 'path'
 import { execSync } from 'child_process'
 import { workspace, extensions, ExtensionContext, commands, ConfigurationScope, WorkspaceFolder } from 'vscode'
 import { trimEnd, uniq } from '~/utils/lodash'
@@ -289,18 +288,6 @@ export class Config {
 
   static get frameworksRubyRailsScopeRoot(): string {
     return this.getConfig<string>('frameworks.ruby-rails.scopeRoot') || ''
-  }
-
-  static get parsersTypescriptTsNodePath(): string {
-    const config = this.getConfig<string>('parsers.typescript.tsNodePath')!
-    if (config === 'ts-node')
-      return config
-
-    return `node "${path.resolve(this.extensionPath!, config)}"`
-  }
-
-  static get parsersTypescriptCompilerOption(): any {
-    return this.getConfig<any>('parsers.typescript.compilerOptions') || {}
   }
 
   static get parsersExtendFileExtensions(): any {
