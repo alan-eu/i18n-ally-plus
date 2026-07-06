@@ -30,7 +30,7 @@
     "i18n:build": "esno scripts/build-i18n.ts",
     "i18n:dev": "nodemon -w ./locales -e json --exec \"nr i18n:build\"",
     "flags:build": "esno scripts/build-flags.ts",
-    "lint": "eslint --ext .ts,.js,.vue .",
+    "lint": "eslint .",
     "lint:fix": "nr lint -- --fix",
     "test": "nr test:unit",
     "test:e2e": "rimraf test/e2e-out && tsc -p test/e2e && cross-env I18N_ALLY_ENV=test node ./test/e2e-out/index.js",
@@ -75,7 +75,6 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.7.0",
     "@antfu/ni": "^0.7.0",
     "@antfu/utils": "^0.2.4",
     "@babel/types": "^7.15.0",
@@ -108,7 +107,10 @@
     "conventional-github-releaser": "^3.1.5",
     "cross-env": "^7.0.3",
     "diff": "^5.0.0",
-    "eslint": "^7.32.0",
+    "eslint": "^9.17.0",
+    "@eslint/js": "^9.17.0",
+    "globals": "^15.14.0",
+    "typescript-eslint": "^8.19.1",
     "esno": "^4.8.0",
     "fs-extra": "^10.0.0",
     "mocha": "^10.8.2",
