@@ -228,7 +228,10 @@ const annotation: ExtensionModule = (ctx) => {
   }
 
   const throttledUpdate = throttle(() => update(), THROTTLE_DELAY)
-  const throttledRefresh = throttle(() => refresh(), THROTTLE_DELAY)
+  // selection changes should feel instant: refresh() only re-renders already
+  // computed decorations from cache, so it doesn't need update()'s heavy delay
+  // (which re-detects keys). The short window still coalesces held arrow keys.
+  const throttledRefresh = throttle(() => refresh(), 50)
 
   const disposables: Disposable[] = []
   CurrentFile.loader.onDidChange(throttledUpdate, null, disposables)
