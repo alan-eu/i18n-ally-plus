@@ -1,5 +1,5 @@
 import { window, DecorationOptions, Range, Disposable, TextEditorDecorationType, TextEditor, workspace, TextDocument, languages, Hover } from 'vscode'
-import throttle from 'lodash/throttle'
+import { throttle } from '~/utils/lodash'
 import { getCommentState } from '../utils/shared'
 import { THROTTLE_DELAY } from '../meta'
 import { createHover } from './hover'

@@ -1,5 +1,5 @@
 import { TreeItem, ExtensionContext, TreeDataProvider, EventEmitter, Event } from 'vscode'
-import throttle from 'lodash/throttle'
+import { throttle } from '~/utils/lodash'
 import { notEmpty } from '../../utils/utils'
 import { BaseTreeItem } from '../items/Base'
 import { ProgressRootItem } from '../items/ProgressRootItem'

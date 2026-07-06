@@ -1,6 +1,6 @@
 import { relative } from 'path'
 import { commands, window, QuickPickItem, Range, TextDocument } from 'vscode'
-import { trim } from 'lodash'
+import { trim } from '~/utils/lodash'
 import { overrideConfirm } from './overrideConfirm'
 import { Commands } from './commands'
 import { keypathValidate, Log, promptTemplates } from '~/utils'

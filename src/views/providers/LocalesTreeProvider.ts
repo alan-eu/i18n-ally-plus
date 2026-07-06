@@ -1,5 +1,5 @@
 import { TreeItem, ExtensionContext, TreeDataProvider, EventEmitter, Event } from 'vscode'
-import { sortBy, throttle } from 'lodash'
+import { sortBy, throttle } from '~/utils/lodash'
 import { LocaleTreeItem } from '../items/LocaleTreeItem'
 import { EditorPanel } from '../../webview/panel'
 import { THROTTLE_DELAY } from '../../meta'

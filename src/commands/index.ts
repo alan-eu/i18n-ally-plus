@@ -1,4 +1,3 @@
-import { flatten } from 'lodash'
 import configLocales from './configLocalePaths'
 import configLanguages from './configLanguages'
 import keyManipulations from './keyManipulations'
@@ -15,7 +14,7 @@ import batchHardStringsExtract from './extractStringBulk'
 import { ExtensionModule } from '~/modules'
 
 const m: ExtensionModule = (ctx) => {
-  return flatten([
+  return [
     configLocales(ctx),
     configLanguages(ctx),
     keyManipulations(ctx),
@@ -29,7 +28,7 @@ const m: ExtensionModule = (ctx) => {
     deepl(ctx),
     gotoRange(ctx),
     gotoNextUsage(ctx),
-  ])
+  ].flat()
 }
 
 export * from './commands'

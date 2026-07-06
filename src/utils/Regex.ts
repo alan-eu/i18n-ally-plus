@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash'
+import { sortBy } from './lodash'
 import { QUOTE_SYMBOLS } from '../meta'
 import { KeyInDocument, RewriteKeyContext } from '../core/types'
 import { ScopeRange } from '../frameworks/base'

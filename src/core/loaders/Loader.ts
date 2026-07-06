@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Disposable, EventEmitter } from 'vscode'
-import { uniq, isObject } from 'lodash'
+import { uniq, isObject } from '~/utils/lodash'
 import { LocaleTree, LocaleNode, LocaleRecord, FlattenLocaleTree } from '../Nodes'
 import { Coverage, FileInfo, PendingWrite, NodeOptions, RewriteKeySource, RewriteKeyContext, DataProcessContext } from '../types'
 import { Config, Global } from '..'

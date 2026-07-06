@@ -63,8 +63,7 @@
 </template>
 
 <script lang="js">
-import { defineComponent } from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
+import { defineComponent, toRaw } from 'vue'
 import Avatar from './Avatar.vue'
 import { vscode } from './api'
 
@@ -123,7 +122,8 @@ export default defineComponent({
 
   methods: {
     resetForm() {
-      this.form = cloneDeep(this.comment)
+      // structuredClone can't clone Vue's reactive proxy, so unwrap it first
+      this.form = structuredClone(toRaw(this.comment))
     },
     resize(ta) {
       if (!ta)

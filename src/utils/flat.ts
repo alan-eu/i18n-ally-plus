@@ -1,5 +1,5 @@
 
-import { set, get, isObject } from 'lodash'
+import { set, get, isObject } from './lodash'
 
 export const ROOT_KEY = '__i18n_ally_root__'
 

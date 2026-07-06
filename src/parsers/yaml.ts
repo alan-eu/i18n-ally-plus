@@ -1,6 +1,5 @@
 import YAML from 'js-yaml'
 import YamlLex from 'yaml'
-import _ from 'lodash'
 import { Parser } from './base'
 import { KeyInDocument, Config } from '~/core'
 
@@ -36,8 +35,7 @@ export class YamlParser extends Parser {
       if (!node)
         return []
       if (node.type === 'MAP' || node.type === 'SEQ')
-      // @ts-ignore
-        return _.flatMap(node.items, m => findPairs(m, path))
+        return (node.items || []).flatMap((m: any) => findPairs(m, path))
       if (node.type === 'PAIR' && node.value != null && node.key != null) {
         if (!['BLOCK_FOLDED', 'BLOCK_LITERAL', 'PLAIN', 'QUOTE_DOUBLE', 'QUOTE_SINGLE'].includes(node.value.type)) {
           return findPairs(node.value, [...path, node.key.toString()])

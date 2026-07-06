@@ -1,5 +1,5 @@
 import { workspace, ExtensionContext, Uri, window, EventEmitter } from 'vscode'
-import { throttle } from 'lodash'
+import { throttle } from '~/utils/lodash'
 import { ComposedLoader } from './loaders/ComposedLoader'
 import { Global } from './Global'
 import { VueSfcLoader } from './loaders/VueSfcLoader'

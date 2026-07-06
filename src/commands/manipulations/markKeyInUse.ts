@@ -1,4 +1,4 @@
-import { uniq } from 'lodash'
+import { uniq } from '~/utils/lodash'
 import { LocaleTreeItem } from '~/views'
 import { Config } from '~/core'
 

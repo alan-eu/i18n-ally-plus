@@ -1,5 +1,4 @@
 import { ExtensionContext } from 'vscode'
-import { flatten } from 'lodash'
 import { version } from '../package.json'
 import { Global, Config, KeyDetector, CurrentFile } from '~/core'
 import commandsModules, { Commands } from '~/commands'
@@ -26,7 +25,7 @@ export async function activate(ctx: ExtensionContext) {
     viewsModules,
   ]
 
-  const disposables = flatten(modules.map(m => m(ctx)))
+  const disposables = modules.map(m => m(ctx)).flat()
   disposables.forEach(d => ctx.subscriptions.push(d))
 }
 

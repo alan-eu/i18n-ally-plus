@@ -1,4 +1,3 @@
-import { flatten } from 'lodash'
 import annotation from './annotation'
 import completion from './completion'
 import extract from './extract'
@@ -11,7 +10,7 @@ import reviewComments from './reviewComments'
 import { ExtensionModule } from '~/modules'
 
 const m: ExtensionModule = (ctx) => {
-  return flatten([
+  return [
     annotation(ctx),
     completion(ctx),
     extract(ctx),
@@ -21,7 +20,7 @@ const m: ExtensionModule = (ctx) => {
     reference(ctx),
     statusbar(ctx),
     reviewComments(ctx),
-  ])
+  ].flat()
 }
 
 export default m

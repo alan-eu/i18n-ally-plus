@@ -1,5 +1,5 @@
 import { ExtensionContext, window, TreeDataProvider, TreeItem, Event, EventEmitter } from 'vscode'
-import { uniq } from 'lodash'
+import { uniq } from '~/utils/lodash'
 import { BaseTreeItem } from '../items/Base'
 import { CurrentFileNotFoundItem } from '../items/CurrentFileNotFoundItem'
 import { CurrentFileInUseItem } from '../items/CurrentFileInUseItem'

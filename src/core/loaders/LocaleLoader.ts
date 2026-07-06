@@ -1,7 +1,7 @@
 import path from 'path'
 import { workspace, window, WorkspaceEdit, RelativePattern } from 'vscode'
 import fg from 'fast-glob'
-import _, { uniq, throttle, set } from 'lodash'
+import { get, set, throttle, uniq } from '~/utils/lodash'
 import fs from 'fs-extra'
 import { findBestMatch } from 'string-similarity'
 import { FILEWATCHER_TIMEOUT } from '../../meta'
@@ -54,12 +54,7 @@ export class LocaleLoader extends Loader {
     // sort by source, display and others by alpha
     const source = Config.sourceLanguage
     const display = Config.displayLanguage
-    const allLocales = _(this._files)
-      .values()
-      .map(f => f.locale)
-      .uniq()
-      .sort()
-      .value()
+    const allLocales = uniq(Object.values(this._files).map(f => f.locale)).sort()
 
     const locales = allLocales
       .filter(i => i !== source && i !== display)
@@ -364,10 +359,9 @@ export class LocaleLoader extends Loader {
   }
 
   async renameKeyInLocales(oldkey: string, newkey: string) {
-    const writes = _(this._files)
-      .entries()
+    const writes = Object.entries(this._files)
       .flatMap(([filepath, file]) => {
-        const value = _.get(file.value, oldkey)
+        const value = get(file.value, oldkey)
         if (value === undefined)
           return []
         return [{
@@ -376,13 +370,12 @@ export class LocaleLoader extends Loader {
           filepath,
           locale: file.locale,
         }, {
-          value: _.get(file.value, oldkey),
+          value,
           keypath: newkey,
           filepath,
           locale: file.locale,
         }]
       })
-      .value()
 
     if (!writes.length)
       return

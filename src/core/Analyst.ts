@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { workspace, Range, Location, TextDocument, Uri, EventEmitter } from 'vscode'
 import micromatch from 'micromatch'
-import _, { uniq } from 'lodash'
+import { uniq } from '~/utils/lodash'
 import { Global } from './Global'
 import { CurrentFile } from './CurrentFile'
 import { UsageReport } from './types'
@@ -117,11 +117,16 @@ export class Analyst {
 
   static async analyzeUsage(useCache = true): Promise<UsageReport> {
     const occurrences = await this.getAllOccurrences(undefined, useCache)
-    const usages: KeyUsage[] = _(occurrences)
-      .groupBy('keypath')
-      .entries()
+    const grouped = new Map<string, typeof occurrences>()
+    for (const occurrence of occurrences) {
+      const group = grouped.get(occurrence.keypath)
+      if (group)
+        group.push(occurrence)
+      else
+        grouped.set(occurrence.keypath, [occurrence])
+    }
+    const usages: KeyUsage[] = [...grouped.entries()]
       .map(([keypath, occurrences]) => ({ keypath, occurrences }))
-      .value()
 
     // all the keys you have
     const allKeys = CurrentFile.loader.keys.map(i => this.normalizeKey(i))
