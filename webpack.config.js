@@ -3,9 +3,8 @@
 'use strict'
 
 const path = require('path')
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin')
+const webpack = require('webpack')
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin')
-const { createUnplugin } = require('unplugin')
 
 /** @type {import('webpack').Configuration} */
 const config = {
@@ -52,26 +51,26 @@ const config = {
         ],
       },
       {
+        // some deps ship ESM .mjs with extensionless imports; don't require fully
+        // specified request paths for them (webpack 5 default is strict)
         test: /\.mjs$/,
         include: /node_modules/,
         type: 'javascript/auto',
+        resolve: {
+          fullySpecified: false,
+        },
       },
     ],
   },
+  // webpack 5: replaced webpack-filter-warnings-plugin
+  ignoreWarnings: [
+    /Critical dependency: the request of a dependency is an expression/,
+  ],
   plugins: [
-    // @ts-ignore
-    new FilterWarningsPlugin({
-      exclude: /Critical dependency: the request of a dependency is an expression/,
+    // webpack 5: replaced the unplugin string-replace transform
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.I18N_ALLY_ENV),
     }),
-    createUnplugin(() => {
-      return {
-        name: 'replace',
-        enforce: 'pre',
-        transform(code) {
-          return code.replace(/process\.env\.NODE_ENV/g, JSON.stringify(process.env.I18N_ALLY_ENV))
-        },
-      }
-    }).webpack(),
   ],
 }
 
