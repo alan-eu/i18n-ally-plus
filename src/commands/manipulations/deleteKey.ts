@@ -20,7 +20,7 @@ export async function DeleteRecords(records: LocaleRecord[]) {
     )
   }
   catch (err) {
-    Log.error(err.toString())
+    Log.error(err)
   }
 }
 

@@ -39,6 +39,6 @@ export async function EditKey(item?: LocaleTreeItem | CommandOptions) {
     }
   }
   catch (err) {
-    Log.error(err.toString())
+    Log.error(err)
   }
 }

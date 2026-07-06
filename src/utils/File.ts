@@ -62,14 +62,14 @@ export class File {
   static async write(filepath: string, data: any, opts?: FileEncoding) {
     const { encoding, bom } = opts || this.__getFileEncoding(filepath)
     await fs.ensureDir(path.dirname(filepath))
-    const buffer = Buffer.from(File.encode(data, encoding, bom))
+    const buffer = File.encode(data, encoding, bom)
     await fs.writeFile(filepath, buffer)
   }
 
   static writeSync(filepath: string, data: any, opts?: FileEncoding) {
     const { encoding, bom } = opts || this.__getFileEncoding(filepath)
     fs.ensureDirSync(path.dirname(filepath))
-    const buffer = Buffer.from(File.encode(data, encoding, bom))
+    const buffer = File.encode(data, encoding, bom)
     fs.writeFileSync(filepath, buffer)
   }
 
