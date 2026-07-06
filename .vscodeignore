@@ -22,25 +22,17 @@ stats.json
 .gitignore
 .gitattributes
 .editorconfig
-.eslintrc.js
-.eslintignore
 package-lock.json
 tsconfig.json
-tslint.json
-webpack.config.js
 renovate.json
-jest.config.js
+eslint.config.js
+tsup.config.ts
+vite.config.ts
+vitest.config.mts
 *.zip
 *.vsix
 
 # Externals
-# jieba
-!node_modules/nodejieba
-!node_modules/nodejieba/build/Release/nodejieba.*
-!node_modules/nodejieba/dict/**
-!node_modules/nodejieba/*.js
-!node_modules/nodejieba/*.json
-
 # ts-node
 !node_modules/ts-node
 !node_modules/ts-node/**/*.js
