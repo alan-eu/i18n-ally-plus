@@ -63,12 +63,12 @@
 </template>
 
 <script lang="js">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import Avatar from './Avatar.vue'
 import { vscode } from './api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Avatar,
   },

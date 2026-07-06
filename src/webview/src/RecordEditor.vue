@@ -10,7 +10,6 @@
       :readonly='readonly'
       @focus='onFocus'
       @blur='onBlur'
-      @input='onInput'
     )
 
     .buttons(v-if='active')
@@ -45,22 +44,22 @@
         span {{$t('prompt.button_apply')}}
 
   .review-panel(v-if='$store.state.config.review && ((comments.length && active) || reviewing)')
-    template(v-for='c in comments')
-      review-comment(:record='record' :comment='c' :key='c.locale')
+    template(v-for='c in comments' :key='c.locale')
+      review-comment(:record='record' :comment='c')
 
     template(v-if='reviewing')
       review-comment(:record='record' :editing='true' mode='create' @done='reviewing=false')
 </template>
 
 <script lang="js">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { getCommentState } from '../../utils/shared'
 import ReviewComment from './ReviewComment.vue'
 import Flag from './Flag.vue'
 import Avatar from './Avatar.vue'
 import { vscode } from './api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Flag,
     Avatar,
@@ -134,10 +133,6 @@ export default Vue.extend({
 
       ta.style.height = 'auto'
       ta.style.height = `${ta.scrollHeight - 3}px`
-    },
-    onInput() {
-      if (this.value !== this.record.value)
-        this.changed = true
     },
     onFocus() {
       this.focused = true

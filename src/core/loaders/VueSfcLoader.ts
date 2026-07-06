@@ -1,6 +1,5 @@
-import { workspace, Uri, TextDocument, WorkspaceEdit, Range } from 'vscode'
-import { squeeze, SFCI18nBlock, MetaLocaleMessage, infuse } from 'vue-i18n-locale-message'
-import { Log, applyPendingToObject, File, unflatten } from '~/utils'
+import { workspace, Uri, WorkspaceEdit, Range } from 'vscode'
+import { Log, SFCI18nBlock, applyPendingToObject, File, infuseVueSfc, squeezeVueSfc, unflatten } from '~/utils'
 import { PendingWrite, NodeOptions } from '../types'
 import { LocaleTree } from '../Nodes'
 import { Global } from '../Global'
@@ -17,7 +16,6 @@ export class VueSfcLoader extends Loader {
   }
 
   _parsedSections: SFCI18nBlock[] = []
-  _meta: MetaLocaleMessage | undefined
 
   get filepath() {
     return this.uri.fsPath
@@ -31,8 +29,7 @@ export class VueSfcLoader extends Loader {
     const filepath = this.filepath
     Log.info(`📑 Loading sfc ${filepath}`)
     const doc = await workspace.openTextDocument(this.uri)
-    const meta = this._meta = squeeze(Global.rootpath, this.getSFCFileInfo(doc))
-    this._parsedSections = meta.components[filepath]
+    this._parsedSections = squeezeVueSfc(doc.getText(), filepath)
 
     this.updateLocalesTree()
     this._onDidChange.fire(this.name)
@@ -40,7 +37,7 @@ export class VueSfcLoader extends Loader {
 
   private getOptions(section: SFCI18nBlock, locale: string, index: number): NodeOptions {
     return {
-      filepath: section.src || this.uri.fsPath,
+      filepath: this.uri.fsPath,
       locale: Config.normalizeLocale(locale),
       features: {
         VueSfc: true,
@@ -50,13 +47,6 @@ export class VueSfcLoader extends Loader {
         VueSfcLocale: locale,
       },
     }
-  }
-
-  private getSFCFileInfo(doc: TextDocument) {
-    return [{
-      path: this.filepath,
-      content: doc.getText(),
-    }]
   }
 
   _locales = new Set<string>()
@@ -87,7 +77,7 @@ export class VueSfcLoader extends Loader {
       pendings = [pendings]
     pendings = pendings.filter(i => i)
 
-    if (!this._meta)
+    if (!this._parsedSections.length)
       return
 
     for (const pending of pendings) {
@@ -97,7 +87,9 @@ export class VueSfcLoader extends Loader {
 
       const sectionIndex = record.meta ? (record.meta.VueSfcSectionIndex || 0) : 0
 
-      const section = this._meta.components[this.filepath][sectionIndex]
+      const section = this._parsedSections[sectionIndex]
+      if (!section)
+        continue
 
       const locale = record?.meta?.VueSfcLocale || pending.locale
 
@@ -110,22 +102,22 @@ export class VueSfcLoader extends Loader {
     }
 
     const doc = await workspace.openTextDocument(this.uri)
-    const [file] = infuse(Global.rootpath, this.getSFCFileInfo(doc), this._meta)
+    const content = infuseVueSfc(doc.getText(), this._parsedSections, this.filepath)
 
     if (doc.isDirty) {
       const edit = new WorkspaceEdit()
-      edit.replace(this.uri, new Range(doc.positionAt(0), doc.positionAt(Infinity)), file.content)
+      edit.replace(this.uri, new Range(doc.positionAt(0), doc.positionAt(Infinity)), content)
 
       await workspace.applyEdit(edit)
     }
     else {
-      await File.write(this.filepath, file.content)
+      await File.write(this.filepath, content)
     }
 
     await this.load()
   }
 
   canHandleWrites(pending: PendingWrite) {
-    return !!this._meta && pending.filepath === this.filepath
+    return !!this._parsedSections.length && pending.filepath === this.filepath
   }
 }

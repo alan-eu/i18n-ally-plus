@@ -13,7 +13,7 @@
 </template>
 
 <script lang="js">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import VCog from 'vue-material-design-icons/Cog.vue'
 import VRefresh from 'vue-material-design-icons/Refresh.vue'
 import VMagnify from 'vue-material-design-icons/Magnify.vue'
@@ -21,7 +21,7 @@ import Flag from './Flag.vue'
 import KeyEditor from './KeyEditor.vue'
 import { vscode } from './api'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Flag,
     KeyEditor,

@@ -71,6 +71,14 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.I18N_ALLY_ENV),
     }),
+    // @vue/compiler-sfc bundles `consolidate`, which lazily requires ~50 optional
+    // template engines only used when compiling `<template lang="...">`. We only
+    // call its SFC `parse()` (for `<i18n>` blocks), so that code path never runs —
+    // ignore the missing optional engines instead of failing the build.
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^(?:tinyliquid|liquid-node|jade|then-jade|then-pug|dust|dustjs-helpers|dustjs-linkedin|swig|swig-templates|razor-tmpl|qejs|nunjucks|arc-templates|velocityjs|atpl|babel-core|bracket-template|coffee-script|dot|eco|ect|ejs|haml-coffee|hamlet|hamljs|hogan\.js|htmling|jazz|jqtpl|just|liquor|marko|mote|mustache|plates|ractive|react|react-dom|slm|squirrelly|teacup|templayed|toffee|twig|twing|vash|walrus|whiskers)(?:\/|$)/,
+      contextRegExp: /[/\\]@vue[/\\]compiler-sfc[/\\]/,
+    }),
   ],
 }
 

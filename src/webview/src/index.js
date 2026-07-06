@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createApp } from 'vue'
+import { createStore } from 'vuex'
+import { createI18n } from 'vue-i18n'
 import 'vue-material-design-icons/styles.css'
-import VueI18n from 'vue-i18n'
 import VCheck from 'vue-material-design-icons/Check.vue'
 import VPlusMinus from 'vue-material-design-icons/PlusMinus.vue'
 import VCommentOutline from 'vue-material-design-icons/CommentOutline.vue'
@@ -21,33 +21,33 @@ import VFormatQuoteOpen from 'vue-material-design-icons/FormatQuoteOpen.vue'
 import { vscode } from './api'
 import App from './App.vue'
 
-Vue.component('VCheck', VCheck)
-Vue.component('VPlusMinus', VPlusMinus)
-Vue.component('VCommentOutline', VCommentOutline)
-Vue.component('VEarth', VEarth)
-Vue.component('VCommentEditOutline', VCommentEditOutline)
-Vue.component('VCommentQuestionOutline', VCommentQuestionOutline)
-Vue.component('VCheckboxMarkedOutline', VCheckboxMarkedOutline)
-Vue.component('VPencilOff', VPencilOff)
-Vue.component('VPencil', VPencil)
-Vue.component('VCheckAll', VCheckAll)
-Vue.component('VDeleteEmptyOutline', VDeleteEmptyOutline)
-Vue.component('VFormatQuoteOpen', VFormatQuoteOpen)
-Vue.component('VMenu', VMenu)
-Vue.component('VChevronLeft', VChevronLeft)
-Vue.component('VChevronRight', VChevronRight)
-
-Vue.use(Vuex)
-Vue.use(VueI18n)
+const icons = {
+  VCheck,
+  VPlusMinus,
+  VCommentOutline,
+  VEarth,
+  VCommentEditOutline,
+  VCommentQuestionOutline,
+  VCheckboxMarkedOutline,
+  VPencilOff,
+  VPencil,
+  VCheckAll,
+  VMenu,
+  VChevronLeft,
+  VChevronRight,
+  VDeleteEmptyOutline,
+  VFormatQuoteOpen,
+}
 
 const locale = 'en'
-const i18n = new VueI18n({
+const i18n = createI18n({
+  legacy: true,
   locale,
   messages: {},
 })
 
-const store = new Vuex.Store({
-  state: () => {
+const store = createStore({
+  state() {
     return Object.assign({
       ready: false,
       config: {
@@ -74,7 +74,7 @@ const store = new Vuex.Store({
     },
     i18n(state, data) {
       state.i18n = data
-      i18n.setLocaleMessage(locale, data)
+      i18n.global.setLocaleMessage(locale, data)
     },
     route(state, { route, data }) {
       state.routeData = data
@@ -88,6 +88,9 @@ const store = new Vuex.Store({
     },
   },
 })
+
+// persist the webview state back to the host on every change
+store.subscribe((_mutation, state) => vscode.setState(state))
 
 window.addEventListener('message', (event) => {
   const message = event.data
@@ -109,19 +112,11 @@ window.addEventListener('message', (event) => {
   }
 })
 
-// @ts-ignore
-window.app = new Vue({
-  store,
-  i18n,
-  watch: {
-    '$store.state': {
-      deep: true,
-      handler() {
-        vscode.setState(this.$store.state)
-      },
-    },
-  },
-  render: createElement => createElement(App),
-}).$mount('#app')
+const app = createApp(App)
+app.use(store)
+app.use(i18n)
+for (const [name, component] of Object.entries(icons))
+  app.component(name, component)
+app.mount('#app')
 
 vscode.postMessage({ type: 'ready' })
