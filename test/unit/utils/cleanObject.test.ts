@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { cleanObject } from '../../../src/utils/cleanObject'
 
 describe('utils', () => {
@@ -18,7 +18,7 @@ describe('utils', () => {
         c: [false, {}],
         d: [[], { d: [] }],
         e: [[], { d: [0] }],
-      })).to.eql({
+      })).toEqual({
         a: {
           b:
            {

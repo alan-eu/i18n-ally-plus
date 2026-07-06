@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { BasicExtrationRule, NonAsciiExtractionRule, shouldExtract } from '../../../../src/extraction'
 
 const rules = [
@@ -65,7 +65,7 @@ describe('extraction-non-ascii-characters', () => {
         excluded.push(`${script} ${nonMatchingCharacters}`)
     }
 
-    expect(excluded).eql([])
+    expect(excluded).toEqual([])
   })
 
   it('should exclude', () => {
@@ -82,6 +82,6 @@ describe('extraction-non-ascii-characters', () => {
         included.push(`${script} ${nonMatchingCharacters}`)
     }
 
-    expect(included).eql([])
+    expect(included).toEqual([])
   })
 })

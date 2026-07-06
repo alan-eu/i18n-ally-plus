@@ -1,5 +1,5 @@
 /* eslint-disable no-dupe-keys */
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { flatten, ROOT_KEY, unflatten } from '../../../src/utils/flat'
 
 describe('utils', () => {
@@ -7,7 +7,7 @@ describe('utils', () => {
     it('basic', () => {
       expect(flatten({
         a: { b: { c: 1 } },
-      })).to.eql({
+      })).toEqual({
         'a.b.c': 1,
       })
     })
@@ -16,7 +16,7 @@ describe('utils', () => {
       expect(flatten({
         [ROOT_KEY]: 2,
         a: { b: { c: 1, [ROOT_KEY]: 3 } },
-      })).to.eql({
+      })).toEqual({
         '': 2,
         'a.b': 3,
         'a.b.c': 1,
@@ -29,7 +29,7 @@ describe('utils', () => {
       expect(unflatten({
         'a.b.c': 1,
         'a.b.d': 2,
-      })).to.eql({
+      })).toEqual({
         a: {
           b: {
             c: 1,
@@ -44,7 +44,7 @@ describe('utils', () => {
         '': 2,
         'a.b': 3,
         'a.b.c': 1,
-      })).to.eql({
+      })).toEqual({
         [ROOT_KEY]: 2,
         a: { b: { c: 1, [ROOT_KEY]: 3 } },
       })

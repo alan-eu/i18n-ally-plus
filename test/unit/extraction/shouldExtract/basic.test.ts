@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { BasicExtrationRule, shouldExtract } from '../../../../src/extraction'
 
 const rules = [
@@ -48,11 +48,11 @@ const excludes = [
 describe('extraction-basic', () => {
   it('should includes', () => {
     const excluded = includes.filter(str => !shouldExtract(str, rules))
-    expect(excluded).eql([])
+    expect(excluded).toEqual([])
   })
 
   it('should exclude', () => {
     const included = excludes.filter(str => shouldExtract(str, rules))
-    expect(included).eql([])
+    expect(included).toEqual([])
   })
 })

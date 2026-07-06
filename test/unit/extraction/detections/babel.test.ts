@@ -1,7 +1,7 @@
 import { basename } from 'path'
 import { promises as fs } from 'fs'
 import fg from 'fast-glob'
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { extractionsParsers } from '../../../../src/extraction'
 
 const babel = extractionsParsers.babel
@@ -18,7 +18,7 @@ describe('detections - babel', () => {
     it(name, async() => {
       const content = await fs.readFile(file, 'utf-8')
       const result = babel.detect(content)
-      expect(result.map(i => i.text)).to.matchSnapshot()
+      expect(result.map(i => i.text)).toMatchSnapshot()
     })
   }
 })

@@ -37,8 +37,9 @@
     "test:e2e:update": "cross-env CHAI_JEST_SNAPSHOT_UPDATE_ALL=true yarn test:e2e",
     "test:e2e:dev": "rimraf test/e2e-out && tsc -p test/e2e --watch",
     "test:fixture": "rimraf test/fixture-scripts-out && tsc -p test/fixture-scripts && cross-env I18N_ALLY_ENV=test node ./test/fixture-scripts-out/index.js",
-    "test:unit": "cross-env I18N_ALLY_ENV=test ts-mocha -p test/unit/tsconfig.json --file test/unit/setup.ts test/unit/**/*.test.ts test/unit/**/**/*.test.ts",
-    "test:update": "cross-env CHAI_JEST_SNAPSHOT_UPDATE_ALL=true nr test:unit"
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:update": "vitest run -u"
   },
   "dependencies": {
     "@babel/parser": "^7.15.3",
@@ -100,7 +101,7 @@
     "chalk": "^4.1.2",
     "commit-and-tag-version": "^12.5.1",
     "cross-env": "^7.0.3",
-    "diff": "^5.0.0",
+    "diff": "^5.2.2",
     "eslint": "^9.17.0",
     "esno": "^4.8.0",
     "fs-extra": "^10.0.0",
@@ -114,11 +115,11 @@
     "rimraf": "^3.0.2",
     "stylus": "^0.54.8",
     "ts-loader": "^9.5.1",
-    "ts-mocha": "^10.1.0",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript-eslint": "^8.19.1",
     "vite": "^6.4.3",
     "vite-plugin-singlefile": "^2.0.3",
+    "vitest": "^3.2.4",
     "vue": "^3.5.13",
     "vue-i18n": "^9.14.2",
     "vue-material-design-icons": "^5.3.1",

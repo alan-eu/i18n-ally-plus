@@ -1,36 +1,36 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`detections - babel v2-cdn.js 1`] = `
-Array [
+exports[`detections - babel > v2-cdn.js 1`] = `
+[
   "This should be detected",
 ]
 `;
 
-exports[`detections - babel v2-cjs.js 1`] = `
-Array [
+exports[`detections - babel > v2-cjs.js 1`] = `
+[
   "Hello",
 ]
 `;
 
-exports[`detections - babel v2-class.js 1`] = `Array []`;
+exports[`detections - babel > v2-class.js 1`] = `[]`;
 
-exports[`detections - babel v2-class-tsx.tsx 1`] = `Array []`;
+exports[`detections - babel > v2-class-tsx.tsx 1`] = `[]`;
 
-exports[`detections - babel v2-esm.js 1`] = `
-Array [
+exports[`detections - babel > v2-esm.js 1`] = `
+[
   "About page",
 ]
 `;
 
-exports[`detections - babel v2-jsx.jsx 1`] = `
-Array [
+exports[`detections - babel > v2-jsx.jsx 1`] = `
+[
   "Nigeria",
   "Nigeria is a large country that has a varied topography.",
 ]
 `;
 
-exports[`detections - babel v2-jsx-2.jsx 1`] = `
-Array [
+exports[`detections - babel > v2-jsx-2.jsx 1`] = `
+[
   "Home page 🚀",
   "Home page description",
   "Home page 🚀",
@@ -38,20 +38,20 @@ Array [
 ]
 `;
 
-exports[`detections - babel v2-ts.ts 1`] = `
-Array [
+exports[`detections - babel > v2-ts.ts 1`] = `
+[
   "v-date-picker-table v-date-picker-table--date",
 ]
 `;
 
-exports[`detections - babel v3-ts.ts 1`] = `
-Array [
+exports[`detections - babel > v3-ts.ts 1`] = `
+[
   "Filename",
 ]
 `;
 
-exports[`detections - babel v3-tsx.tsx 1`] = `
-Array [
+exports[`detections - babel > v3-tsx.tsx 1`] = `
+[
   "AComment",
 ]
 `;

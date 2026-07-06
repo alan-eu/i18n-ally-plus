@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { scopeGitignorePattern } from '../../../src/utils/gitignore'
 
 describe('scopeGitignorePattern', () => {
@@ -35,7 +35,7 @@ describe('scopeGitignorePattern', () => {
 
   for (const [rel, raw, expected] of cases) {
     it(`(${JSON.stringify(rel)}, ${JSON.stringify(raw)}) -> ${JSON.stringify(expected)}`, () => {
-      expect(scopeGitignorePattern(rel, raw)).to.eql(expected)
+      expect(scopeGitignorePattern(rel, raw)).toEqual(expected)
     })
   }
 })
