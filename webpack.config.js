@@ -24,9 +24,7 @@ const config = {
   externals: {
     'vscode': 'commonjs vscode',
     'nodejieba': 'nodejieba',
-    'esm': 'esm',
     'ts-node': 'ts-node',
-    'consolidate': 'consolidate',
     'less': '_',
     'sass': '_',
     'stylus': '_',
@@ -77,7 +75,7 @@ const config = {
     // ignore the missing optional engines instead of failing the build.
     new webpack.IgnorePlugin({
       resourceRegExp: /^(?:tinyliquid|liquid-node|jade|then-jade|then-pug|dust|dustjs-helpers|dustjs-linkedin|swig|swig-templates|razor-tmpl|qejs|nunjucks|arc-templates|velocityjs|atpl|babel-core|bracket-template|coffee-script|dot|eco|ect|ejs|haml-coffee|hamlet|hamljs|hogan\.js|htmling|jazz|jqtpl|just|liquor|marko|mote|mustache|plates|ractive|react|react-dom|slm|squirrelly|teacup|templayed|toffee|twig|twing|vash|walrus|whiskers)(?:\/|$)/,
-      contextRegExp: /[/\\]@vue[/\\]compiler-sfc[/\\]/,
+      contextRegExp: /[/\\](?:@vue[/\\]compiler-sfc|consolidate)[/\\]/,
     }),
   ],
 }
