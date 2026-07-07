@@ -1,6 +1,6 @@
 {
-  "publisher": "lokalise",
-  "name": "i18n-ally",
+  "publisher": "alan-eu",
+  "name": "i18n-ally-plus",
   "version": "2.13.1",
   "displayName": "i18n Ally",
   "description": "🌍 All in one i18n extension for VS Code",
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lokalise/i18n-ally"
+    "url": "https://github.com/alan-eu/i18n-ally-plus"
   },
   "main": "./dist/extension",
   "scripts": {
@@ -155,8 +155,8 @@
     "onLanguage:svelte"
   ],
   "icon": "res/logo.png",
-  "homepage": "https://github.com/lokalise/i18n-ally",
-  "bugs": "https://github.com/lokalise/i18n-ally/issues",
+  "homepage": "https://github.com/alan-eu/i18n-ally-plus",
+  "bugs": "https://github.com/alan-eu/i18n-ally-plus/issues",
   "contributes": {
     "commands": [
       {
