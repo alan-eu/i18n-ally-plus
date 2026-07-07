@@ -17,13 +17,11 @@ locales/**
 scripts/**
 test-resources/**
 
-stats.json
 .gitignore
 .gitattributes
 .editorconfig
 package-lock.json
 tsconfig.json
-renovate.json
 eslint.config.js
 tsup.config.ts
 vite.config.ts
