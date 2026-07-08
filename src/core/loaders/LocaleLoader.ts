@@ -9,6 +9,7 @@ import { ParsedFile, PendingWrite, DirStructure, TargetPickingStrategy } from '.
 import { LocaleTree } from '../Nodes'
 import { AllyError, ErrorType } from '../Errors'
 import { Analyst, Global, Config } from '..'
+import { NamespaceModules } from '../NamespaceModules'
 import { Loader } from './Loader'
 import { ReplaceLocale, Log, applyPendingToObject, unflatten, NodeHelper, getCache, setCache, getLocaleCompare } from '~/utils'
 import i18n from '~/i18n'
@@ -412,11 +413,19 @@ export class LocaleLoader extends Loader {
     if (namespace)
       namespace = namespace.replace(/\//g, '.')
 
-    // prefix a path-derived scope so short namespaces reused across apps/packages
-    // (e.g. `app` in many apps) stay distinct — see Config.getPathScope
-    const scope = Config.getPathScope(fullpath)
-    if (scope)
-      namespace = namespace ? `${scope}.${namespace}` : scope
+    // a namespace declared in code (see NamespaceModules) is authoritative — it is
+    // the real i18next namespace, so it wins over any path-guessed scope/namespace
+    const declared = NamespaceModules.getNamespace(fullpath)
+    if (declared) {
+      namespace = declared
+    }
+    else {
+      // prefix a path-derived scope so short namespaces reused across apps/packages
+      // (e.g. `app` in many apps) stay distinct — see Config.getPathScope
+      const scope = Config.getPathScope(fullpath)
+      if (scope)
+        namespace = namespace ? `${scope}.${namespace}` : scope
+    }
 
     let locale = match.groups?.locale
     if (locale)
@@ -655,6 +664,8 @@ export class LocaleLoader extends Loader {
   }
 
   private async loadAll(watch = true) {
+    // rebuild the code-declared namespace map from source on every full reload
+    NamespaceModules.invalidate()
     for (const pathname of this._locale_dirs) {
       try {
         Log.info(`\n📂 Loading locales under ${pathname}`)

@@ -932,6 +932,17 @@
           "type": "string",
           "description": "%config.namespace_from_path%"
         },
+        "i18n-ally.namespaceModules": {
+          "type": [
+            "string",
+            "array"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Glob(s), relative to the project root, matching code files that declare i18next namespaces (e.g. `{ namespace: \"foo\", resources: { en: require(\"./translations/en.json\") } }`). The declared namespace is read from source and applied to the matched catalogs, so a namespace defined in code (not in the folder name) still lines up with its usages. Rebuilt on every full reload."
+        },
         "i18n-ally.pathMatcher": {
           "type": [
             "string",

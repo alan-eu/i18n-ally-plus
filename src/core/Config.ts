@@ -23,6 +23,7 @@ export class Config {
     'encoding',
     'namespace',
     'namespaceFromPath',
+    'namespaceModules',
     'defaultNamespace',
     'disablePathParsing',
     'readonly',
@@ -114,6 +115,13 @@ export class Config {
   static get namespaceFromPath(): string | undefined {
     const value = this.getConfig<string>('namespaceFromPath')
     return value && value.trim() ? value.trim() : undefined
+  }
+
+  static get namespaceModules(): string[] {
+    const config = this.getConfig<string | string[]>('namespaceModules')
+    if (!config)
+      return []
+    return (Array.isArray(config) ? config : [config]).filter(Boolean)
   }
 
   private static _pathScopeRegex?: { src: string; reg: RegExp | undefined }

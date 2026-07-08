@@ -5,6 +5,7 @@ import { ScopeRange } from '../frameworks/base'
 import { Log } from '.'
 import i18n from '~/i18n'
 import { CurrentFile, Config } from '~/core'
+import { NamespaceModules } from '~/core/NamespaceModules'
 
 export function handleRegexMatch(
   text: string,
@@ -63,9 +64,16 @@ export function handleRegexMatch(
  */
 export function applyPathScope(key: string, filepath?: string): string {
   const scope = Config.getPathScope(filepath)
-  if (scope && key.split('.')[0] !== scope)
-    return `${scope}.${key}`
-  return key
+  if (!scope)
+    return key
+  const head = key.split('.')[0]
+  // don't stack a path scope on top of a real, code-declared namespace: that
+  // namespace is authoritative and its catalog isn't path-scoped, so e.g. a `profile`
+  // namespace declared under a `user-profile/` folder must stay `profile.foo`, not
+  // `userProfile.profile.foo`
+  if (head === scope || NamespaceModules.isDeclaredNamespace(head))
+    return key
+  return `${scope}.${key}`
 }
 
 export function regexFindKeys(

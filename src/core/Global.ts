@@ -239,7 +239,7 @@ export class Global {
   }
 
   static get namespaceEnabled() {
-    return Config.namespace || !!Config.namespaceFromPath || this.hasFeatureEnabled('namespace')
+    return Config.namespace || !!Config.namespaceFromPath || Config.namespaceModules.length > 0 || this.hasFeatureEnabled('namespace')
   }
 
   static get localesPaths(): string[] | undefined {
