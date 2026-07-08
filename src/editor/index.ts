@@ -2,6 +2,7 @@ import annotation from './annotation'
 import completion from './completion'
 import extract from './extract'
 import definition from './definition'
+import localeUsage from './localeUsage'
 import refactor from './refactor'
 import problems from './problems'
 import reference from './reference'
@@ -16,6 +17,7 @@ const m: ExtensionModule = (ctx) => {
     extract(ctx),
     refactor(ctx),
     definition(ctx),
+    localeUsage(ctx),
     problems(ctx),
     reference(ctx),
     statusbar(ctx),
