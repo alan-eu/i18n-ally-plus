@@ -859,6 +859,14 @@
           },
           "description": "%config.keys_in_use%"
         },
+        "i18n-ally.keysInUseFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Paths (relative to the project root) to JSON files, each an array of key glob patterns, merged into `keysInUse`. Lets a monorepo generate the in-use list from its i18n tooling instead of hand-maintaining it in settings."
+        },
         "i18n-ally.sortKeys": {
           "type": "boolean",
           "default": false,

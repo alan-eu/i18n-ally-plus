@@ -1,4 +1,6 @@
+import { resolve } from 'path'
 import { execSync } from 'child_process'
+import fs from 'fs-extra'
 import { workspace, extensions, ExtensionContext, commands, ConfigurationScope, WorkspaceFolder } from 'vscode'
 import { trimEnd, uniq } from '~/utils/lodash'
 import { TagSystems } from '../tagSystems'
@@ -42,6 +44,7 @@ export class Config {
 
   static readonly usageRefreshConfigs = [
     'keysInUse',
+    'keysInUseFiles',
     'derivedKeyRules',
   ]
 
@@ -406,11 +409,33 @@ export class Config {
   }
 
   static get keysInUse() {
-    return this.getConfig<string[]>('keysInUse') || []
+    return [...(this.getConfig<string[]>('keysInUse') || []), ...this.keysInUseFromFiles]
   }
 
   static set keysInUse(value) {
     this.setConfig('keysInUse', value)
+  }
+
+  static get keysInUseFiles() {
+    return this.getConfig<string[]>('keysInUseFiles') || []
+  }
+
+  // `keysInUse` patterns can also be sourced from committed JSON files (each an
+  // array of key glob patterns) via `keysInUseFiles`. Handy for monorepos that
+  // generate the list from their i18n tooling instead of hand-maintaining it.
+  static get keysInUseFromFiles(): string[] {
+    const patterns: string[] = []
+    for (const file of this.keysInUseFiles) {
+      try {
+        const data = fs.readJsonSync(resolve(this.root, file))
+        if (Array.isArray(data))
+          patterns.push(...data.filter((p): p is string => typeof p === 'string'))
+      }
+      catch {
+        // the file may not exist yet (e.g. before the generator has run) — ignore
+      }
+    }
+    return patterns
   }
 
   static get usageDerivedKeyRules() {

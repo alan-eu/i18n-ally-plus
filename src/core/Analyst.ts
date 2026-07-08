@@ -128,16 +128,18 @@ export class Analyst {
     const usages: KeyUsage[] = [...grouped.entries()]
       .map(([keypath, occurrences]) => ({ keypath, occurrences }))
 
+    // resolve once — `keysInUse` may read from files (see Config.keysInUseFromFiles)
+    const keysInUse = Config.keysInUse
     // all the keys you have
     const allKeys = CurrentFile.loader.keys.map(i => this.normalizeKey(i))
     // keys occur in your code
-    const inUseKeys = uniq([...usages.map(i => i.keypath), ...Config.keysInUse].map(i => this.normalizeKey(i)))
+    const inUseKeys = uniq([...usages.map(i => i.keypath), ...keysInUse].map(i => this.normalizeKey(i)))
     // keys in use
     const activeKeys = inUseKeys.filter(i => allKeys.includes(i))
     // keys not in use
     let idleKeys = allKeys
       .filter(i => !inUseKeys.includes(i))
-      .filter(i => !micromatch.isMatch(i, Config.keysInUse))
+      .filter(i => !micromatch.isMatch(i, keysInUse))
     // keys in use, but actually you don't have them
     let missingKeys = inUseKeys.filter(i => !allKeys.includes(i))
 
