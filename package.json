@@ -241,11 +241,6 @@
         "title": "Detect hard-coded strings in current file (experimental)"
       },
       {
-        "command": "i18n-ally.open-url",
-        "category": "%extname%",
-        "title": "%command.open_url%"
-      },
-      {
         "command": "i18n-ally.fulfill-keys",
         "category": "%extname%",
         "title": "%command.fulfill_keys%",
@@ -256,11 +251,6 @@
         "category": "%extname%",
         "title": "%command.refresh_usage%",
         "icon": "$(refresh)"
-      },
-      {
-        "command": "i18n-ally.support",
-        "category": "%extname%",
-        "title": "%feedback.support%"
       },
       {
         "command": "i18n-ally.locale-visibility-show",
@@ -419,10 +409,6 @@
         },
         {
           "command": "i18n-ally.open-key",
-          "when": "false"
-        },
-        {
-          "command": "i18n-ally.open-url",
           "when": "false"
         },
         {
@@ -687,11 +673,6 @@
         {
           "id": "i18n-ally-locales-usage",
           "name": "%view.usage%",
-          "when": "i18n-ally-enabled"
-        },
-        {
-          "id": "i18n-ally-help-feedback",
-          "name": "%view.help_feedback%",
           "when": "i18n-ally-enabled"
         }
       ]

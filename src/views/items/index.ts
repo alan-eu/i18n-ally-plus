@@ -1,5 +1,4 @@
 export * from './Base'
-export * from './FeedbackItem'
 export * from './LocaleTreeItem'
 export * from './LocationTreeItem'
 export * from './ProgressBaseItem'

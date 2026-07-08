@@ -1,7 +1,7 @@
 import { window } from 'vscode'
 import { ExtensionModule } from '~/modules'
 import { ViewIds } from './ViewIds'
-import { CurrentFileLocalesTreeProvider, HelpFeedbackProvider, ProgressProvider, LocalesTreeProvider } from './providers'
+import { CurrentFileLocalesTreeProvider, ProgressProvider, LocalesTreeProvider } from './providers'
 import { UsageReportProvider } from './providers/UsageReportProvider'
 
 export * from './items'
@@ -36,10 +36,6 @@ const m: ExtensionModule = (ctx) => {
   usageReportProvider.view = window.createTreeView(ViewIds.usage, {
     treeDataProvider: usageReportProvider,
     showCollapseAll: true,
-  })
-
-  window.createTreeView(ViewIds.feedback, {
-    treeDataProvider: new HelpFeedbackProvider(ctx),
   })
 
   return []
