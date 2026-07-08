@@ -11,11 +11,15 @@ import { gitignoredGlob } from '~/utils/glob'
 
 export class Analyst {
   private static _cache: KeyOccurrence[] | null = null
+  // dynamic-key prefixes (dot-ending stems) derived from call sites like
+  // t(`foo.${x}`); recomputed on each full scan (see getAllOccurrences)
+  private static _dynamicPrefixes: string[] = []
   static readonly _onDidUsageReportChanged = new EventEmitter<UsageReport>()
   static readonly onDidUsageReportChanged = Analyst._onDidUsageReportChanged.event
 
   static invalidateCache() {
     this._cache = null
+    this._dynamicPrefixes = []
   }
 
   static invalidateCacheOf(filepath: string) {
@@ -45,8 +49,11 @@ export class Analyst {
     const filepath = doc.uri.fsPath
     Log.info(`🔄 Update usage cache of ${filepath}`)
     this.invalidateCacheOf(filepath)
-    const occurrences = await this.getOccurrencesOfText(doc, filepath)
+    const { occurrences, dynamicPrefixes } = this.getOccurrencesOfText(doc, filepath)
     this._cache.push(...occurrences)
+    // best-effort: fold in this file's dynamic prefixes (stale ones clear on the
+    // next full scan, which the usage report always triggers)
+    this._dynamicPrefixes = uniq([...this._dynamicPrefixes, ...dynamicPrefixes])
   }
 
   private static async enumerateDocumentPaths() {
@@ -59,23 +66,23 @@ export class Analyst {
     let doc = workspace.textDocuments.find(doc => doc.uri.fsPath === filepath)
     if (!doc)
       doc = await workspace.openTextDocument(Uri.file(filepath))
-    return await this.getOccurrencesOfText(doc, filepath)
+    return this.getOccurrencesOfText(doc, filepath)
   }
 
-  private static async getOccurrencesOfText(doc: TextDocument, filepath: string) {
-    const keys = KeyDetector.getKeys(doc)
+  private static getOccurrencesOfText(doc: TextDocument, filepath: string) {
+    // dotEnding=true also yields dynamic-key prefixes (e.g. `foo.` from t(`foo.${x}`))
+    const keys = KeyDetector.getKeys(doc, undefined, true)
     const occurrences: KeyOccurrence[] = []
+    const dynamicPrefixes: string[] = []
 
     for (const { start, end, key } of keys) {
-      occurrences.push({
-        keypath: key,
-        start,
-        end,
-        filepath,
-      })
+      if (key.endsWith('.'))
+        dynamicPrefixes.push(key)
+      else
+        occurrences.push({ keypath: key, start, end, filepath })
     }
 
-    return occurrences
+    return { occurrences, dynamicPrefixes }
   }
 
   static async getAllOccurrences(targetKey?: string, useCache = true) {
@@ -84,17 +91,31 @@ export class Analyst {
 
     if (!this._cache) {
       const occurrences: KeyOccurrence[] = []
+      const prefixes = new Set<string>()
       const filepaths = await this.enumerateDocumentPaths()
 
-      for (const filepath of filepaths)
-        occurrences.push(...await this.getOccurrencesOfFile(filepath))
+      for (const filepath of filepaths) {
+        const result = await this.getOccurrencesOfFile(filepath)
+        occurrences.push(...result.occurrences)
+        for (const prefix of result.dynamicPrefixes)
+          prefixes.add(prefix)
+      }
 
       this._cache = occurrences
+      this._dynamicPrefixes = [...prefixes]
     }
 
     if (targetKey)
       return this._cache.filter(({ keypath }) => keypath === targetKey)
     return this._cache
+  }
+
+  // globs derived from dynamic call sites (e.g. t(`foo.${x}`) -> "foo.*"), used to
+  // keep dynamically-built keys out of the "unused" usage report
+  static get dynamicKeyGlobs(): string[] {
+    return this._dynamicPrefixes
+      .filter(prefix => prefix.replace(/\.+$/, ''))
+      .map(prefix => `${prefix}*`)
   }
 
   static async getAllOccurrenceLocations(targetKey: string) {
@@ -136,10 +157,11 @@ export class Analyst {
     const inUseKeys = uniq([...usages.map(i => i.keypath), ...keysInUse].map(i => this.normalizeKey(i)))
     // keys in use
     const activeKeys = inUseKeys.filter(i => allKeys.includes(i))
-    // keys not in use
+    // keys not in use — also exclude anything matched by a dynamic call-site
+    // prefix (e.g. t(`foo.${x}`) keeps foo.* out of the unused list)
     let idleKeys = allKeys
       .filter(i => !inUseKeys.includes(i))
-      .filter(i => !micromatch.isMatch(i, keysInUse))
+      .filter(i => !micromatch.isMatch(i, [...keysInUse, ...this.dynamicKeyGlobs]))
     // keys in use, but actually you don't have them
     let missingKeys = inUseKeys.filter(i => !allKeys.includes(i))
 

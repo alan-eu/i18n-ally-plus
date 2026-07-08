@@ -93,7 +93,10 @@ export class KeyDetector {
   static init(ctx: ExtensionContext) {
     workspace.onDidChangeTextDocument(
       (e) => {
-        delete this._get_keys_cache[e.document.uri.fsPath]
+        const fsPath = e.document.uri.fsPath
+        // cache is keyed by dotEnding (see getKeys) — drop both variants
+        delete this._get_keys_cache[`0:${fsPath}`]
+        delete this._get_keys_cache[`1:${fsPath}`]
       },
       null,
       ctx.subscriptions,
@@ -106,10 +109,15 @@ export class KeyDetector {
     let text = ''
     let rewriteContext: RewriteKeyContext| undefined
     let filepath = ''
+    // cache is keyed by dotEnding too: the usage scan reads with dotEnding=true to
+    // also capture dynamic-key prefixes, and must not leak those partials to the
+    // dotEnding=false callers (hover / completion / annotations)
+    let cacheKey = ''
     if (typeof document !== 'string') {
       filepath = document.uri.fsPath
-      if (this._get_keys_cache[filepath])
-        return this._get_keys_cache[filepath]
+      cacheKey = `${dotEnding ? 1 : 0}:${filepath}`
+      if (this._get_keys_cache[cacheKey])
+        return this._get_keys_cache[cacheKey]
 
       regs = regs ?? Global.getUsageMatchRegex(document.languageId, filepath)
       text = document.getText()
@@ -125,7 +133,7 @@ export class KeyDetector {
 
     const keys = regexFindKeys(text, regs, dotEnding, rewriteContext, scopes)
     if (filepath)
-      this._get_keys_cache[filepath] = keys
+      this._get_keys_cache[cacheKey] = keys
     return keys
   }
 
