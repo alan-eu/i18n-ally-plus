@@ -54,26 +54,34 @@ export async function GoToKey(item?: LocaleTreeItem | CommandOptions | ProgressR
     const keypath = node.keypath
 
     const document = await workspace.openTextDocument(filepath)
-    const editor = await window.showTextDocument(document)
 
     const ext = path.extname(filepath)
     const parser = Global.getMatchedParser(ext)
     if (!parser)
       return
 
-    const text = editor.document.getText()
-    const range = parser.navigateToKey(text, NodeHelper.getPathWithoutNamespace(keypath, node), await Global.requestKeyStyle())
+    // resolve the key's position *before* opening the editor
+    const range = parser.navigateToKey(
+      document.getText(),
+      NodeHelper.getPathWithoutNamespace(keypath, node),
+      await Global.requestKeyStyle(),
+    )
 
-    if (range) {
-      editor.selection = new Selection(
-        document.positionAt(range.end),
-        document.positionAt(range.start),
-      )
-      editor.revealRange(editor.selection, TextEditorRevealType.InCenter)
-      commands.executeCommand('workbench.action.focusActiveEditorGroup')
-    }
-    else {
+    if (!range) {
+      await window.showTextDocument(document)
       Log.warn(i18n.t('prompt.failed_to_locate_key', keypath), true)
+      return
     }
+
+    // Open already positioned on the key, in a single navigation step. Opening
+    // first and moving the caret afterwards registers two jumps, which leaves a
+    // spurious "top of file" entry in the editor's go-back history.
+    const selection = new Selection(
+      document.positionAt(range.end),
+      document.positionAt(range.start),
+    )
+    const editor = await window.showTextDocument(document, { selection })
+    editor.revealRange(selection, TextEditorRevealType.InCenter)
+    commands.executeCommand('workbench.action.focusActiveEditorGroup')
   }
 }
